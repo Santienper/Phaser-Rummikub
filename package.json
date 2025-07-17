@@ -1,0 +1,16 @@
+{
+    "name": "phaser-rummikub",
+    "private": true,
+    "version": "0.1",
+    "description": "Rummikub in Phaser (JS) :)",
+    "scripts": {
+        "dev": "vite"
+    },
+    "license": "GPL-3.0-only",
+    "devDependencies": {
+        "vite": "^7.0.4"
+    },
+    "dependencies": {
+        "phaser": "^3.90.0"
+    }
+}
