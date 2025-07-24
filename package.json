@@ -4,7 +4,8 @@
     "version": "0.1",
     "description": "Rummikub in Phaser (JS) :)",
     "scripts": {
-        "dev": "vite"
+        "dev": "vite",
+        "build": "vite build"
     },
     "license": "GPL-3.0-only",
     "devDependencies": {
