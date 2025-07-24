@@ -1,11 +1,13 @@
 {
-    "name": "phaser-rummikub",
+    "name": "phaser-rummikub-client",
     "private": true,
     "version": "0.1",
-    "description": "Rummikub in Phaser (JS) :)",
+    "description": "Client for Rummikub in Phaser (JS) :)",
     "scripts": {
+        "install": "npm install",
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "deploy": "wrangler deploy"
     },
     "license": "GPL-3.0-only",
     "devDependencies": {
