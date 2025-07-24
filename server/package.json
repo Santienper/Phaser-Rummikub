@@ -1,0 +1,16 @@
+{
+    "name": "phaser-rummikub-server",
+    "private": true,
+    "version": "0.1",
+    "description": "Server for Rummikub in Phaser (JS) :)",
+    "scripts": {
+        "dev": "npm start",
+        "deploy": "wrangler deploy"
+    },
+    "license": "GPL-3.0-only",
+    "dependencies": {
+        "dotenv": "^16.4.1",
+        "express": "^4.18.2",
+        "node-fetch": "^3.3.2"
+    }
+}

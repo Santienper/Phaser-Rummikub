@@ -1,0 +1,6 @@
+{
+    "name": "server-rummikub",
+    "vars": {
+        "DISCORD_CLIENT_ID": 1398066709201424496
+    }
+}
