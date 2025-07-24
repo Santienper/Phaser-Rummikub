@@ -1,5 +1,6 @@
 {
     "name": "client-rummikub",
+    "compatibility_date": "2025-07-24",
     "assets": {
         "not_found_handling": "single-page-application"
     },
