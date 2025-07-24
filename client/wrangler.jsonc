@@ -1,6 +1,9 @@
 {
     "name": "client-rummikub",
+    "assets": {
+        "not_found_handling": "single-page-application"
+    },
     "vars": {
-        
+
     }
 }
