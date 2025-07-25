@@ -8,7 +8,7 @@
         "dev": "vite",
         "build": "vite build",
         "preview": "npm run build && vite preview",
-        "deploy": "npm run build && wrangler deploy"
+        "deploy": "wrangler deploy"
     },
     "license": "GPL-3.0-only",
     "devDependencies": {

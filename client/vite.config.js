@@ -8,9 +8,8 @@ export default defineConfig({
     server: {
         proxy: {
             '/.proxy/assets': {
-                target: 'https://client-rummikub.santiagotp.workers.dev/assets',
+                target: 'http://localhost:5173/assets',
                 changeOrigin: true,
-                secure: true,
                 ws: true,
                 rewrite: (path) => path.replace(/^\/.proxy\/assets/, ''),
             },
