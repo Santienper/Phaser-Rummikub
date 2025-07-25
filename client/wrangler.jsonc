@@ -1,6 +1,10 @@
 {
     "name": "client-rummikub",
     "compatibility_date": "2025-07-24",
+    "main": "index.js",
+    "assets": {
+        "binding": "ASSETS"
+    },
     "vars": {
 
     }
