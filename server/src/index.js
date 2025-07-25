@@ -1,15 +1,8 @@
-import express from "express";
-import fetch from "node-fetch";
+import { Hono } from 'hono'
 
-const app = express();
-const port = 3001;
+const app = new Hono()
 
-// Allow express to parse JSON bodies
-app.use(express.json());
-
-app.post("/api/token", async (req, res) => {
-  
-  // Exchange the code for an access_token
+app.post('/api/token', async (c) => {
   const response = await fetch(`https://discord.com/api/oauth2/token`, {
     method: "POST",
     headers: {
@@ -27,9 +20,7 @@ app.post("/api/token", async (req, res) => {
   const { access_token } = await response.json();
 
   // Return the access_token to our client as { access_token: "..."}
-  res.send({access_token});
-});
+  c.res.json({access_token});
+})
 
-app.listen(port, () => {
-  console.log(`Server listening at http://localhost:${port}`);
-});
+export default app

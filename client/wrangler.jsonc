@@ -1,6 +1,10 @@
 {
     "name": "client-rummikub",
     "compatibility_date": "2025-07-24",
+    "assets": {
+        "directory": "./dist",
+        "not_found_handling": "single-page-application"
+    },
     "vars": {
 
     }

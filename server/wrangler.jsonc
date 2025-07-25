@@ -1,11 +1,12 @@
 {
-    "name": "server-rummikub",
-    "compatibility_date": "2025-07-24",
-    "main": "server.js",
-    "vars": {
-        "DISCORD_CLIENT_ID": 1398066709201424496
-    },
-    "compatibility_flags": [
-        "nodejs_compat"
-    ]
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "server2",
+  "main": "src/index.js",
+  "compatibility_date": "2025-07-24",
+  "vars": {
+    "DISCORD_CLIENT_ID": 1398066709201424496
+  },
+  // "compatibility_flags": [
+  //   "nodejs_compat"
+  // ]
 }
