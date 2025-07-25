@@ -1,12 +1,11 @@
-import YIPEE from '/assets/YIPEE.png';
-
 export default class Test extends Phaser.Scene {
     constructor() {
         super({ key: 'test' });
     }
 
     preload() {
-        this.load.image('YIPEE', YIPEE);
+        this.load.setPath('/.proxy/assets');
+        this.load.image('YIPEE', 'YIPEE.png');
     }
 
     create() {
