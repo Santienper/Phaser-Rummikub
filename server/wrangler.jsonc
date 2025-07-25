@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "server2",
+  "name": "server-rummikub",
   "main": "src/index.js",
   "compatibility_date": "2025-07-24",
   "vars": {
