@@ -1,7 +1,9 @@
 import { defineConfig } from 'vite';
+import { cloudflare } from "@cloudflare/vite-plugin";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    plugins: [cloudflare()],
     envDir: '../',
     server: {
         proxy: {
@@ -11,12 +13,6 @@ export default defineConfig({
                 secure: true,
                 ws: true,
                 rewrite: (path) => path.replace(/^\/.proxy\/assets/, ''),
-            },
-            '/api': {
-                target: 'https://server-rummikub.santiagotp.workers.dev/',
-                changeOrigin: true,
-                secure: true,
-                ws: true,
             },
         },
         hmr: {
