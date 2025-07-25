@@ -6,7 +6,7 @@ export default defineConfig({
     server: {
         proxy: {
             '/.proxy/assets': {
-                target: 'https://client-rummikub.santiagotp.workers.dev/public/assets',
+                target: 'https://client-rummikub.santiagotp.workers.dev/assets',
                 changeOrigin: true,
                 secure: true,
                 ws: true,
