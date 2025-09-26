@@ -1,4 +1,5 @@
 import Piece from "../objects/piece";
+import Board from "../objects/board"
 
 export default class Test extends Phaser.Scene {
     constructor() {
@@ -29,16 +30,41 @@ export default class Test extends Phaser.Scene {
             sprite.x = dragX;
             sprite.y = dragY;
         });
-        
+
         this.SORT_SENSITIVITY = {
             x: 10,
             y: 10
         }
         this.maxDepth = this.CANVAS_HEIGHT + 1;
+        this.board = new Board(this, 3, 12, 120, 150, 75, 75);
 
         let handBg = this.add.image(this.CANVAS_WIDTH / 2, this.CANVAS_HEIGHT, "handBg").setOrigin(0.5, 1);
         let piece = new Piece(this, 100, 100, 12, Piece.Colors.Red);
+
+
         let piece2 = new Piece(this, 100, 100, 0, Piece.Colors.Red);
+        let piece3 = new Piece(this, 100, 100, 12, Piece.Colors.Black);
+        let piece4 = new Piece(this, 100, 100, 12, Piece.Colors.Blue);
+        let piece5 = new Piece(this, 100, 100, 11, Piece.Colors.Red);
+        let piece6 = new Piece(this, 100, 100, 10, Piece.Colors.Red);
+        let piece7 = new Piece(this, 100, 100, 13, Piece.Colors.Red);
+
+
+        this.input.keyboard.on('keydown-SPACE', () => {
+            let text = "";
+            let matriz = this.board.board;
+            for (let i = 0; i < matriz.length; i++) {
+                for (let j = 0; j < matriz[i].length; j++) {
+                    if (matriz[i][j]) text += matriz[i][j].number + " ";
+                    else text += "_ "
+                }
+                text += "\n";   // salto de línea al terminar la fila
+            }
+
+            console.log(text)
+        });
+
+
     }
 
     update(t, dt) {
@@ -52,7 +78,7 @@ export default class Test extends Phaser.Scene {
 
                 const baseDepth = yFactor + xFactor;
                 obj.setDepth(baseDepth + index * 0.1);
-                
+
                 obj.sortDragging();
             }
         });

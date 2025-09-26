@@ -7,19 +7,29 @@ export default class Piece extends Phaser.GameObjects.Container {
         Yellow: "#f38331",
         Black: "#000000ff",
     }
-    
+
     constructor(scene, x, y, number, color) {
         super(scene, x, y);
         this.scene = scene;
         this.scene.add.existing(this);
-        
-        // 0 == comodin
+
+        this.comodin = number === 0;
         this.number = number;
         this.color = color;
 
+        this.board = scene.board;
+        this.startX = x;
+        this.startY = y;
+        this.initialScale = 0.6;
+        this.boardScale = 0.7;
+
+        this.row = -1;
+        this.col = -1;
+        this.onBoard = false;
+
         const DEFAULT_SCALE = 0.8;
         this.setScale(DEFAULT_SCALE);
-        
+
         const WILDCARD_IMG_SCALE = 0.12;
         const TEXT_OFFSET = {
             x: -2,
@@ -49,7 +59,7 @@ export default class Piece extends Phaser.GameObjects.Container {
         this.add(this.pieceImg);
         this.add(this.numberText);
 
-        
+
         let dims = this.getBounds();
         this.setSize(dims.width, dims.height);
 
@@ -61,19 +71,43 @@ export default class Piece extends Phaser.GameObjects.Container {
             hitAreaCallback: Phaser.Geom.Rectangle.Contains,
             draggable: true
         });
-        
+
         this.dragging = false;
+
+        this.on("dragstart", (pointer, dragX, dragY) => {
+            this.dragging = true;
+            if (this.onBoard) {
+                this.board.board[this.row][this.col] = null;
+            }
+        });
+
         this.on("drag", (pointer, dragX, dragY) => {
             this.dragging = true;
             this.x = dragX;
             this.y = dragY;
         });
+
         this.on("dragend", () => {
             this.dragging = false;
+            let l = [this];
+            if (this.board.tryPlace(l)) {
+                this.setScale(this.boardScale);
+                this.onBoard = true;
+            } else {
+                this.goToStart();
+            }
         });
-        
+
         this.setInteractive();
     }
+
+    goToStart() {
+        this.x = this.startX;
+        this.y = this.startY;
+        this.setScale(this.initialScale);
+    }
+
+
 
     sortDragging() {
         if (this.dragging) {
