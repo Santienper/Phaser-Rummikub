@@ -1,5 +1,6 @@
 import Piece from "../objects/piece";
 import Board from "../objects/board"
+import Rack from "../objects/rack";
 
 export default class Test extends Phaser.Scene {
     constructor() {
@@ -38,7 +39,9 @@ export default class Test extends Phaser.Scene {
         this.maxDepth = this.CANVAS_HEIGHT + 1;
         this.board = new Board(this, 3, 12, 120, 150, 75, 75);
 
-        let handBg = this.add.image(this.CANVAS_WIDTH / 2, this.CANVAS_HEIGHT, "handBg").setOrigin(0.5, 1);
+        //let handBg = this.add.image(this.CANVAS_WIDTH / 2, this.CANVAS_HEIGHT, "handBg").setOrigin(0.5, 1);
+        this.rack = new Rack(this, 80, 100, this.CANVAS_WIDTH / 2, 750);
+
         let piece = new Piece(this, 100, 100, 12, Piece.Colors.Red);
 
 
@@ -48,6 +51,21 @@ export default class Test extends Phaser.Scene {
         let piece5 = new Piece(this, 100, 100, 11, Piece.Colors.Red);
         let piece6 = new Piece(this, 100, 100, 10, Piece.Colors.Red);
         let piece7 = new Piece(this, 100, 100, 13, Piece.Colors.Red);
+        this.rack.addPiece(piece);
+
+        this.rack.addPiece(piece2);
+        this.rack.addPiece(piece3);
+
+        this.rack.addPiece(piece4);
+
+        this.rack.addPiece(piece5);
+
+        this.rack.addPiece(piece6);
+
+        this.rack.addPiece(piece7);
+
+
+
 
 
         this.input.keyboard.on('keydown-SPACE', () => {
@@ -62,6 +80,10 @@ export default class Test extends Phaser.Scene {
             }
 
             console.log(text)
+        });
+
+        this.input.keyboard.on('keydown-A', (event) => {
+            this.rack.print();
         });
 
 

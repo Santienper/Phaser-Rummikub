@@ -308,4 +308,11 @@ export default class Board {
         return true;
     }
 
+    getPiece(row, col) {
+        if (row >= 0 && row < this.rows && col >= 0 && col < this.cols) {
+            return this.board[row][col];
+        }
+        return null;
+    }
+
 }

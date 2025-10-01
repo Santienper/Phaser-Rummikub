@@ -18,14 +18,22 @@ export default class Piece extends Phaser.GameObjects.Container {
         this.color = color;
 
         this.board = scene.board;
-        this.startX = x;
-        this.startY = y;
-        this.initialScale = 0.6;
+        this.rack = scene.rack;
+
+        this.startRow = -1;
+        this.startCol = -1;
+
+        this.racklScale = 0.4;
         this.boardScale = 0.7;
 
         this.row = -1;
         this.col = -1;
         this.onBoard = false;
+
+
+        this.pieces = [this];
+
+        this.PIECES_OFFSET = 100;
 
         const DEFAULT_SCALE = 0.8;
         this.setScale(DEFAULT_SCALE);
@@ -74,27 +82,76 @@ export default class Piece extends Phaser.GameObjects.Container {
 
         this.dragging = false;
 
-        this.on("dragstart", (pointer, dragX, dragY) => {
-            this.dragging = true;
-            if (this.onBoard) {
-                this.board.board[this.row][this.col] = null;
-            }
-        });
-
         this.on("drag", (pointer, dragX, dragY) => {
             this.dragging = true;
-            this.x = dragX;
-            this.y = dragY;
+            if (this.holdTimer) {
+                this.holdTimer.remove();
+                this.holdTimer = null;
+                console.log("Empiezo a mover");
+                for (let piece of this.pieces) {
+                    piece.movePiece();
+                }
+            }
+            for (let i = 0; i < this.pieces.length; i++) {
+                this.pieces[i].x = dragX + i * this.PIECES_OFFSET;
+                this.pieces[i].y = dragY;
+            }
         });
 
         this.on("dragend", () => {
             this.dragging = false;
-            let l = [this];
-            if (this.board.tryPlace(l)) {
-                this.setScale(this.boardScale);
-                this.onBoard = true;
-            } else {
-                this.goToStart();
+            if (this.board.tryPlace(this.pieces)) {
+                for (let piece of this.pieces) {
+                    piece.setScale(this.boardScale);
+                    piece.onBoard = true;
+                }
+            }
+            else if(this.rack.tryPlace(this.pieces)){
+                for (let piece of this.pieces) {
+                    piece.setScale(this.racklScale);
+                    piece.onBoard = false;
+                }
+            }
+            else {
+                //TODO
+                for (let piece of this.pieces) {
+                    piece.goToStart();
+                }
+            }
+            this.pieces = [this];
+        });
+
+        this.on("pointerdown", () => {
+            this.dragging = false;
+            this.holdTimer = this.scene.time.addEvent({
+                delay: 500,
+                loop: true,
+                callback: () => {
+                    console.log("👉 Evento cada 1s");
+
+                    let p = this.board.getPiece(this.row, this.col + this.pieces.length);
+                    if (p) {
+                        this.pieces.push(p);
+                        if (this.board.isValidGroup(this.pieces)) {
+                            p.x = (this.pieces.length - 1) * this.PIECES_OFFSET + this.x;
+                            return;
+                        }
+                        this.pieces.pop();
+                    }
+
+                    this.holdTimer.remove();
+                    this.holdTimer = null;
+                    console.log("Condición cumplida, paro el timer");
+
+                }
+            });
+        });
+
+        this.on("pointerup", () => {
+            if (this.holdTimer) {
+                this.holdTimer.remove();
+                this.holdTimer = null;
+                console.log("Suelto el click, paro el timer");
             }
         });
 
@@ -102,9 +159,24 @@ export default class Piece extends Phaser.GameObjects.Container {
     }
 
     goToStart() {
-        this.x = this.startX;
-        this.y = this.startY;
-        this.setScale(this.initialScale);
+        // if(this.onBoard){
+
+        // }
+        // else{
+
+        // }
+        // this.x = this.startX;
+        // this.y = this.startY;
+        // this.setScale(this.racklScale);
+    }
+
+    movePiece() {
+        if (this.onBoard) {
+            this.board.board[this.row][this.col] = null;
+        }
+        else {
+            this.rack.grid[this.row][this.col] = null;
+        }
     }
 
 
