@@ -113,7 +113,6 @@ export default class Piece extends Phaser.GameObjects.Container {
                 }
             }
             else {
-                //TODO
                 for (let piece of this.pieces) {
                     piece.goToStart();
                 }
@@ -127,8 +126,6 @@ export default class Piece extends Phaser.GameObjects.Container {
                 delay: 500,
                 loop: true,
                 callback: () => {
-                    console.log("👉 Evento cada 1s");
-
                     let p = this.board.getPiece(this.row, this.col + this.pieces.length);
                     if (p) {
                         this.pieces.push(p);
@@ -138,11 +135,8 @@ export default class Piece extends Phaser.GameObjects.Container {
                         }
                         this.pieces.pop();
                     }
-
                     this.holdTimer.remove();
                     this.holdTimer = null;
-                    console.log("Condición cumplida, paro el timer");
-
                 }
             });
         });
@@ -151,7 +145,6 @@ export default class Piece extends Phaser.GameObjects.Container {
             if (this.holdTimer) {
                 this.holdTimer.remove();
                 this.holdTimer = null;
-                console.log("Suelto el click, paro el timer");
             }
         });
 
@@ -159,15 +152,12 @@ export default class Piece extends Phaser.GameObjects.Container {
     }
 
     goToStart() {
-        // if(this.onBoard){
-
-        // }
-        // else{
-
-        // }
-        // this.x = this.startX;
-        // this.y = this.startY;
-        // this.setScale(this.racklScale);
+        if(this.onBoard){
+            this.board.alignToGrid(this,this.row,this.col);
+        }
+        else{
+            this.rack.alignToGrid(this,this.row,this.col);
+        }
     }
 
     movePiece() {

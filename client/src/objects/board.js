@@ -45,20 +45,24 @@ export default class Board {
         this.groupToMove.push({ x, y, group });
     }
 
+
+    alignToGrid(piece, row, col) {
+        this.board[row][col] = piece;
+        piece.row = row;
+        piece.col = col;
+        piece.onBoard = true;
+        piece.setScale(piece.boardScale);
+        piece.x = this.offsetX + col * this.cellWidth + this.cellWidth / 2;
+        piece.y = this.offsetY + row * this.cellHeight + this.cellHeight / 2;
+    }
+
     // Añadir a tablero
     addGroupToBoard(x, y, group) {
         for (let i = 0; i < group.length; ++i) {
             let col = x + i;
             let row = y;
-            group[i].x = this.offsetX + col * this.cellWidth + this.cellWidth / 2;
-            group[i].y = this.offsetY + row * this.cellHeight + this.cellHeight / 2;
-            group[i].row = row;
-            group[i].col = col;
-            this.board[row][col] = group[i];
+            this.alignToGrid(group[i],row,col);
         }
-
-        console.log("addGroupToBoard");
-        console.log(group);
 
     }
 
@@ -69,8 +73,6 @@ export default class Board {
                 this.board[y][col] = null;
             }
         }
-        console.log("clearBoard");
-
     }
 
     getLeftGroup(x, y) {
@@ -139,9 +141,6 @@ export default class Board {
                 startX++;
             }
         }
-
-        console.log("removeNeighborGroups");
-
     }
 
     // Buscar el hueco más cercano para cada grupo pendiente y lo coloca en el tablero
@@ -164,7 +163,7 @@ export default class Board {
                     }
                     if (freeSegmentLength >= requiredSpace) {
                         let startX = x - groupSize;
-                        let distance = Math.abs(startX - origX) + Math.abs(y - origY);
+                        let distance = Math.abs(startX - origX)*0.5 + Math.abs(y - origY);
                         if (distance < bestDistance) {
                             bestDistance = distance;
                             bestSpot = { x: startX, y };
@@ -176,8 +175,6 @@ export default class Board {
             if (bestSpot) {
                 this.addGroupToBoard(bestSpot.x, bestSpot.y, group);
             }
-            console.log(bestSpot);
-
         }
         this.groupToMove = [];
 
@@ -218,9 +215,6 @@ export default class Board {
     }
 
 
-    // saveState() {
-    //     this.previousBoard = JSON.parse(JSON.stringify(this.board));
-    // }
 
     // restoreState() {
     //     if (this.previousBoard) {
@@ -228,8 +222,6 @@ export default class Board {
     //     }
     // }
 
-
-    // Conseguir un grupo de fichas 
     getConnectedGroup(x, y) {
         let group = [];
 
