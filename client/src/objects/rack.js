@@ -127,17 +127,17 @@ export default class Rack extends Phaser.GameObjects.Container {
     }
 
     print() {
-         let text = "";
-            let matriz = this.grid;
-            for (let i = 0; i < matriz.length; i++) {
-                for (let j = 0; j < matriz[i].length; j++) {
-                    if (matriz[i][j]) text += matriz[i][j].number + " ";
-                    else text += "_ "
-                }
-                text += "\n";   // salto de línea al terminar la fila
+        let text = "";
+        let matriz = this.grid;
+        for (let i = 0; i < matriz.length; i++) {
+            for (let j = 0; j < matriz[i].length; j++) {
+                if (matriz[i][j]) text += matriz[i][j].number + " ";
+                else text += "_ "
             }
+            text += "\n";   // salto de línea al terminar la fila
+        }
 
-            console.log(text)
+        console.log(text)
     }
 
     addPiece(piece) {
@@ -151,6 +151,13 @@ export default class Rack extends Phaser.GameObjects.Container {
         }
         console.warn("No hay espacio libre en la mano");
         return false;
+    }
+
+    getPiece(row, col) {
+        if (row >= 0 && row < this.rows && col >= 0 && col < this.cols) {
+            return this.grid[row][col];
+        }
+        return null;
     }
 
 

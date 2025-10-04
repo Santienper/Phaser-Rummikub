@@ -33,7 +33,7 @@ export default class Piece extends Phaser.GameObjects.Container {
 
         this.pieces = [this];
 
-        this.PIECES_OFFSET = 100;
+        this.PIECES_OFFSET = 100 / 0.7;
 
         const DEFAULT_SCALE = 0.8;
         this.setScale(DEFAULT_SCALE);
@@ -93,20 +93,19 @@ export default class Piece extends Phaser.GameObjects.Container {
                 }
             }
             for (let i = 0; i < this.pieces.length; i++) {
-                this.pieces[i].x = dragX + i * this.PIECES_OFFSET;
+                this.pieces[i].x = dragX + i * this.PIECES_OFFSET * (this.onBoard ? this.boardScale : this.racklScale);
                 this.pieces[i].y = dragY;
             }
         });
 
         this.on("dragend", () => {
-            this.dragging = false;
-            if (this.board.tryPlace(this.pieces)) {
+            if (this.dragging && this.board.tryPlace(this.pieces)) {
                 for (let piece of this.pieces) {
                     piece.setScale(this.boardScale);
                     piece.onBoard = true;
                 }
             }
-            else if(this.rack.tryPlace(this.pieces)){
+            else if (this.dragging && this.rack.tryPlace(this.pieces)) {
                 for (let piece of this.pieces) {
                     piece.setScale(this.racklScale);
                     piece.onBoard = false;
@@ -117,6 +116,7 @@ export default class Piece extends Phaser.GameObjects.Container {
                     piece.goToStart();
                 }
             }
+            this.dragging = false;
             this.pieces = [this];
         });
 
@@ -126,11 +126,13 @@ export default class Piece extends Phaser.GameObjects.Container {
                 delay: 500,
                 loop: true,
                 callback: () => {
-                    let p = this.board.getPiece(this.row, this.col + this.pieces.length);
+                    let source = this.onBoard ? this.board : this.rack;
+                    let scale = this.onBoard ? this.boardScale : this.racklScale;
+                    let p = source.getPiece(this.row, this.col + this.pieces.length);
                     if (p) {
                         this.pieces.push(p);
                         if (this.board.isValidGroup(this.pieces)) {
-                            p.x = (this.pieces.length - 1) * this.PIECES_OFFSET + this.x;
+                            p.x = (this.pieces.length - 1) * this.PIECES_OFFSET * scale + this.x;
                             return;
                         }
                         this.pieces.pop();
@@ -152,11 +154,11 @@ export default class Piece extends Phaser.GameObjects.Container {
     }
 
     goToStart() {
-        if(this.onBoard){
-            this.board.alignToGrid(this,this.row,this.col);
+        if (this.onBoard) {
+            this.board.alignToGrid(this, this.row, this.col);
         }
-        else{
-            this.rack.alignToGrid(this,this.row,this.col);
+        else {
+            this.rack.alignToGrid(this, this.row, this.col);
         }
     }
 
