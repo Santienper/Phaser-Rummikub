@@ -20,8 +20,8 @@ export default class Piece extends Phaser.GameObjects.Container {
         this.board = scene.board;
         this.rack = scene.rack;
 
-        this.startRow = -1;
-        this.startCol = -1;
+        this.previousRow = -1;
+        this.previousCol = -1;
 
         this.racklScale = 0.4;
         this.boardScale = 0.7;

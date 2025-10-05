@@ -1,55 +1,15 @@
-export default class Rack extends Phaser.GameObjects.Container {
+import Grid from "./grid";
+export default class Rack extends Grid {
     constructor(scene, cellWidth, cellHeight, offsetX, offsetY) {
-        super(scene, offsetX, offsetY);
+        super(scene, 2, 10, 2, 30, cellWidth, cellHeight, offsetX, offsetY);
         this.scene = scene;
         this.scene.add.existing(this);
 
-        this.rows = 2;
-        this.cols = 10;
-        this.cellWidth = cellWidth;
-        this.cellHeight = cellHeight;
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
+        this.posX = this.offsetX + this.cols * this.cellWidth / 2.0;
+        this.posY = this.offsetY + this.cellHeight;
 
-        this.posX = this.offsetX - this.cols * this.cellWidth / 2.0;
-        this.posY = this.offsetY - this.cellHeight;
-
-        this.grid = Array.from({ length: this.rows }, () => Array(this.cols).fill(null));
-
-        this.previousBoard = null;
-        this.groupToMove = [];
-        this.graphics = scene.add.graphics();
-
-        this.drawMatrix(this.rows, this.cols, this.cellWidth, this.cellHeight, this.posX, this.posY);
-
-        this.handBgImg = this.scene.add.image(0, 0, "handBg").setOrigin(0.5, 0.5);
-        this.add(this.handBgImg);
-
-    }
-
-    drawMatrix(rows, cols, cellWidth, cellHeight, startX, startY) {
-        const g = this.graphics;
-        g.lineStyle(1, 0xFFFFFF, 1);
-
-        const width = cols * cellWidth;
-        const height = rows * cellHeight;
-
-        // Dibujar líneas verticales
-        for (let c = 0; c <= cols; c++) {
-            let x = startX + c * cellWidth;
-            g.moveTo(x, startY);
-            g.lineTo(x, startY + height);
-        }
-
-        // Dibujar líneas horizontales
-        for (let r = 0; r <= rows; r++) {
-            let y = startY + r * cellHeight;
-            g.moveTo(startX, y);
-            g.lineTo(startX + width, y);
-        }
-
-        g.strokePath();
-        // g.setDepth(100);
+        this.handBgImg = this.scene.add.image(this.posX, this.posY, "handBg");
+        this.drawMatrix(this.rows, this.cols, this.cellWidth, this.cellHeight, this.offsetX, this.offsetY);
     }
 
     // Convierte (row, col) a índice lineal
@@ -68,8 +28,8 @@ export default class Rack extends Phaser.GameObjects.Container {
         piece.col = col;
         piece.onBoard = false;
         piece.setScale(piece.racklScale);
-        piece.x = this.posX + col * this.cellWidth + this.cellWidth / 2;
-        piece.y = this.posY + row * this.cellHeight + this.cellHeight / 2;
+        piece.x = this.offsetX + col * this.cellWidth + this.cellWidth / 2;
+        piece.y = this.offsetY + row * this.cellHeight + this.cellHeight / 2;
     }
 
     placePieces(row, col, pieces) {
@@ -113,9 +73,8 @@ export default class Rack extends Phaser.GameObjects.Container {
 
     tryPlace(pieces) {
         let piece = pieces[0];
-        let col = Math.floor((piece.x - this.posX) / this.cellWidth);
-        let row = Math.floor((piece.y - this.posY) / this.cellHeight);
-
+        let col = Math.floor((piece.x - this.offsetX) / this.cellWidth);
+        let row = Math.floor((piece.y - this.offsetY) / this.cellHeight);
         if (
             row >= 0 && row < this.rows &&
             col >= 0 && col < this.cols
@@ -124,20 +83,6 @@ export default class Rack extends Phaser.GameObjects.Container {
             return true;
         }
         return false;
-    }
-
-    print() {
-        let text = "";
-        let matriz = this.grid;
-        for (let i = 0; i < matriz.length; i++) {
-            for (let j = 0; j < matriz[i].length; j++) {
-                if (matriz[i][j]) text += matriz[i][j].number + " ";
-                else text += "_ "
-            }
-            text += "\n";   // salto de línea al terminar la fila
-        }
-
-        console.log(text)
     }
 
     addPiece(piece) {
@@ -152,13 +97,5 @@ export default class Rack extends Phaser.GameObjects.Container {
         console.warn("No hay espacio libre en la mano");
         return false;
     }
-
-    getPiece(row, col) {
-        if (row >= 0 && row < this.rows && col >= 0 && col < this.cols) {
-            return this.grid[row][col];
-        }
-        return null;
-    }
-
 
 }

@@ -1,43 +1,10 @@
-export default class Board {
+import Grid from "./grid";
+
+export default class Board extends Grid {
     constructor(scene, rows, cols, cellWidth, cellHeight, offsetX, offsetY) {
-        this.rows = rows;
-        this.cols = cols;
-        this.cellWidth = cellWidth;
-        this.cellHeight = cellHeight;
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
-        this.board = Array.from({ length: rows }, () => Array(cols).fill(null));
-
-        this.previousBoard = null;
+        super(scene, rows, cols, 10, 30, cellWidth, cellHeight, offsetX, offsetY);
         this.groupToMove = [];
-        this.graphics = scene.add.graphics();
-
         this.drawMatrix(this.rows, this.cols, this.cellWidth, this.cellHeight, this.offsetX, this.offsetY);
-    }
-
-    drawMatrix(rows, cols, cellWidth, cellHeight, startX, startY) {
-        const g = this.graphics;
-        g.lineStyle(1, 0xFFFFFF, 1);
-
-        const width = cols * cellWidth;
-        const height = rows * cellHeight;
-
-        // Dibujar líneas verticales
-        for (let c = 0; c <= cols; c++) {
-            const x = startX + c * cellWidth;
-            g.moveTo(x, startY);
-            g.lineTo(x, startY + height);
-        }
-
-        // Dibujar líneas horizontales
-        for (let r = 0; r <= rows; r++) {
-            const y = startY + r * cellHeight;
-            g.moveTo(startX, y);
-            g.lineTo(startX + width, y);
-        }
-
-        g.strokePath();
-        // g.setDepth(100);
     }
 
     // Añadir a lista de grupos de fichas que hay que cambiar de sitio o añadir a tablero
@@ -45,9 +12,8 @@ export default class Board {
         this.groupToMove.push({ x, y, group });
     }
 
-
     alignToGrid(piece, row, col) {
-        this.board[row][col] = piece;
+        this.grid[row][col] = piece;
         piece.row = row;
         piece.col = col;
         piece.onBoard = true;
@@ -70,7 +36,7 @@ export default class Board {
         for (let i = 0; i < group.length; ++i) {
             const col = x + i;
             if (col >= 0 && col < this.cols && y >= 0 && y < this.rows) {
-                this.board[y][col] = null;
+                this.grid[y][col] = null;
             }
         }
     }
@@ -78,10 +44,10 @@ export default class Board {
     getLeftGroup(x, y) {
         let group = [];
 
-        if (this.board[y][x] == null) return group;
+        if (this.grid[y][x] == null) return group;
 
-        for (let i = x; i >= 0 && this.board[y][i]; i--) {
-            group.push(this.board[y][i]);
+        for (let i = x; i >= 0 && this.grid[y][i]; i--) {
+            group.push(this.grid[y][i]);
         }
 
         group.reverse();
@@ -91,11 +57,11 @@ export default class Board {
 
     getRightGroup(x, y) {
         let group = [];
-        if (this.board[y][x] == null) x++;
-        if (this.board[y][x] == null) return group;
+        if (this.grid[y][x] == null) x++;
+        if (this.grid[y][x] == null) return group;
 
-        for (let i = x; i < this.board[y].length && this.board[y][i]; i++) {
-            group.push(this.board[y][i]);
+        for (let i = x; i < this.grid[y].length && this.grid[y][i]; i++) {
+            group.push(this.grid[y][i]);
         }
 
         return group;
@@ -132,7 +98,7 @@ export default class Board {
         let endX = Math.min(this.cols - 1, x + group.length + 1);
 
         while (startX < endX) {
-            if (this.board[y][startX]) {
+            if (this.grid[y][startX]) {
                 let g = this.getConnectedGroup(startX, y);
                 this.clearBoard(g.x, y, g.group);
                 this.addGroupToMove(g.x, y, g.group);
@@ -155,7 +121,7 @@ export default class Board {
             for (let y = 0; y < this.rows; y++) {
                 freeSegmentLength = 0;
                 for (let x = 0; x <= this.cols - requiredSpace; x++) {
-                    if (!this.board[y][x]) {
+                    if (!this.grid[y][x]) {
                         freeSegmentLength++;
                     }
                     else {
@@ -163,7 +129,7 @@ export default class Board {
                     }
                     if (freeSegmentLength >= requiredSpace) {
                         let startX = x - groupSize;
-                        let distance = Math.abs(startX - origX)*0.5 + Math.abs(y - origY);
+                        let distance = Math.abs(startX - origX)*0.3 + Math.abs(y - origY);
                         if (distance < bestDistance) {
                             bestDistance = distance;
                             bestSpot = { x: startX, y };
@@ -215,6 +181,14 @@ export default class Board {
     }
 
 
+    endRound(){
+        if(this.detectValidGroups()){
+            
+        }
+        else{
+
+        }
+    }
 
     // restoreState() {
     //     if (this.previousBoard) {
@@ -225,58 +199,21 @@ export default class Board {
     getConnectedGroup(x, y) {
         let group = [];
 
-        if (this.board[y][x] == null) return group;
+        if (this.grid[y][x] == null) return group;
 
-        for (let i = x - 1; i >= 0 && this.board[y][i]; i--) {
-            group.push(this.board[y][i]);
+        for (let i = x - 1; i >= 0 && this.grid[y][i]; i--) {
+            group.push(this.grid[y][i]);
         }
 
         group.reverse();
 
         let newX = x - group.length;
 
-        for (let i = x; i < this.cols && this.board[y][i]; i++) {
-            group.push(this.board[y][i]);
+        for (let i = x; i < this.cols && this.grid[y][i]; i++) {
+            group.push(this.grid[y][i]);
         }
 
         return { x: newX, group };
-    }
-
-    // Ver si es valido el grupo
-    isValidGroup(group) {
-        if (!group || group.length === 0) return false;
-
-        const allJokers = group.every(p => p.comodin);
-        if (allJokers) return false;
-
-        // Buscar la primera pieza que no es comodín
-        const firstNonJokerIndex = group.findIndex(p => !p.comodin);
-        const firstNonJoker = group[firstNonJokerIndex];
-
-        const sameValue = group.every(p => p.comodin || p.number === firstNonJoker.number);
-        const sameColor = group.every(p => p.comodin || p.color === firstNonJoker.color);
-
-        if (sameValue && !sameColor && group.length <= 4) {
-            // asegurarse de que no hay colores repetidos entre las fichas no-joker
-            const seen = new Set();
-            for (let p of group) {
-                if (!p.comodin) {
-                    if (seen.has(p.color)) return false;
-                    seen.add(p.color);
-                }
-            }
-            return true;
-        }
-
-        if (sameColor) {
-            let cont = firstNonJoker.number + 1;
-            for (let i = firstNonJokerIndex + 1; i < group.length; i++) {
-                if (group[i].number !== cont && !group[i].comodin) return false;
-                cont++;
-            }
-            return firstNonJoker.number - firstNonJokerIndex > 0 && firstNonJoker.number + group.length - 1 - firstNonJokerIndex <= 13;
-        }
-        return false;
     }
 
     // Ver si mapa es valido
@@ -284,7 +221,7 @@ export default class Board {
         for (let y = 0; y < this.rows; y++) {
             let group = [];
             for (let x = 0; x < this.cols; x++) {
-                const piece = this.board[y][x];
+                const piece = this.grid[y][x];
                 if (piece) {
                     group.push(piece);
                 }
@@ -298,13 +235,6 @@ export default class Board {
             }
         }
         return true;
-    }
-
-    getPiece(row, col) {
-        if (row >= 0 && row < this.rows && col >= 0 && col < this.cols) {
-            return this.board[row][col];
-        }
-        return null;
     }
 
 }

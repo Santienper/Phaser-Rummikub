@@ -40,7 +40,7 @@ export default class Test extends Phaser.Scene {
         this.board = new Board(this, 3, 12, 120, 150, 75, 75);
 
         //let handBg = this.add.image(this.CANVAS_WIDTH / 2, this.CANVAS_HEIGHT, "handBg").setOrigin(0.5, 1);
-        this.rack = new Rack(this, 80, 100, this.CANVAS_WIDTH / 2, 750);
+        this.rack = new Rack(this, 80, 100, 350, 600);
 
         let piece = new Piece(this, 100, 100, 12, Piece.Colors.Red);
 
@@ -51,6 +51,8 @@ export default class Test extends Phaser.Scene {
         let piece5 = new Piece(this, 100, 100, 11, Piece.Colors.Red);
         let piece6 = new Piece(this, 100, 100, 10, Piece.Colors.Red);
         let piece7 = new Piece(this, 100, 100, 13, Piece.Colors.Red);
+        let piece8 = new Piece(this, 100, 100, 13, Piece.Colors.Black);
+
         this.rack.addPiece(piece);
 
         this.rack.addPiece(piece2);
@@ -63,6 +65,9 @@ export default class Test extends Phaser.Scene {
         this.rack.addPiece(piece6);
 
         this.rack.addPiece(piece7);
+
+        this.rack.addPiece(piece8);
+
 
 
 
